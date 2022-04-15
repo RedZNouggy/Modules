@@ -1,5 +1,5 @@
 ﻿# Module Powershell créé par Samuel PAGES 
-# modifié le 07/04/2022 par Samuel PAGES pour les espaces disque de dapdc5 et crabe
+# modifié le 07/04/2022 par Samuel PAGES pour les espaces disque
 
 
 # Fonction de Check réseau (ping l'ip que l'on choisis)
