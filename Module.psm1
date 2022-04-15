@@ -136,10 +136,7 @@ function Get-WinVers()
             "10.0.20348" { $win_release = "21H2" }
         }
     }
-    else
-    {
-        return $win_release
-    }
+    return $win_release
 }
 
 # get number of all Unused Items (Files Folders) (you can choose the CutOffDate)
