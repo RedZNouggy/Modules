@@ -8,27 +8,51 @@ function Check-Network
     [OutputType([bool])]
     param
     (
-        <#
-        [ValidateNotNullOrEmpty()]
         [Parameter(Mandatory=$false, Position=0)]
-        [ValidatePattern('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')]
-        [ValidateScript({ ping -n 3 -4 -w 100 $_})]
-        [String]$OwnIP,
-        #>
+        [Switch]$TestCeaExtra,
 
         [ValidateNotNullOrEmpty()]
         [Parameter(Mandatory=$false, Position=1)]
         # Validate IP : 'int.int.int.int'
         [ValidatePattern('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')]
-        [String]$Ip
+        [String]$Ip,
+
+        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory=$false, Position=2)]
+        # Validate IP : 'int.int.int.int'
+        [ValidatePattern('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')]
+        [String]$Ip2
     )
-    if(Test-Connection -ComputerName $Ip -Count 3 -Delay 1 -ea Ignore)
+    if($TestCeaExtra)
     {
-        return $true;
+        $extra = $false
+        Get-NetConnectionProfile | ForEach-Object -process { if ($_.Name -like "extra.cea.fr*") { $extra = $true } }
+        if($extra -eq $true)
+        {
+            return $true;
+        }
+        else
+        {
+            return $false;
+        }
     }
-    else 
+    if( ($Ip) -or ($Ip2))
     {
-        return $false;
+        if(Test-Connection -ComputerName $Ip -Count 3 -Delay 1 -ea Ignore)
+        {
+            return $true;
+        }
+        else 
+        {
+            if(Test-Connection -ComputerName $Ip2 -Count 3 -Delay 1 -ea Ignore)
+            {
+                return $true;
+            }
+            else 
+            { 
+                return $false;
+            }
+        }
     }
 }
 
