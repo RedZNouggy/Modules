@@ -197,11 +197,11 @@ function Get-NumberOfUnusedItems
 
 funtion Remove-LimitedConnection
 {
-    $log = Get-Item "C:\Windows\Logs\Scripts-DRF\Check-MeeteredConnection.log" -ErrorAction Ignore
+    $log = Get-Item "$env:windir\Logs\Scripts-DRF\Check-MeeteredConnection.log" -ErrorAction Ignore
 
-    if($log.Length -ge 100000000) { Rename-Item -Path "C:\Windows\Logs\Scripts-DRF\Check-MeeteredConnection.log" -NewName "Check-MeeteredConnection(old).log" -Force }
-    elseif($log.Length -ge 200000000) { Remove-Item "C:\Windows\Logs\Scripts-DRF\Check-MeeteredConnection(old).log" -Force }
-    else { Start-Transcript "C:\Windows\Logs\Scripts-DRF\Check-MeeteredConnection.log" -Append -Force }
+    if($log.Length -ge 100000000) { Rename-Item -Path "$env:windir\Logs\Scripts-DRF\Check-MeeteredConnection.log" -NewName "Check-MeeteredConnection(old).log" -Force }
+    elseif($log.Length -ge 200000000) { Remove-Item "$env:windir\Logs\Scripts-DRF\Check-MeeteredConnection(old).log" -Force }
+    else { Start-Transcript "$env:windir\Logs\Scripts-DRF\Check-MeeteredConnection.log" -Append -Force }
 
 
     $Startdate = Get-Date -Format 'dd/MM/yyyy HH:mm:ss' -ErrorAction Ignore
