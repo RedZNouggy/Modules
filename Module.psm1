@@ -194,3 +194,61 @@ function Get-NumberOfUnusedItems
     if($ok -eq "") { Write-Output "There is no File or Folder which is OutOfDate" }
     else { return $ok.Count }
 }
+
+funtion Remove-LimitedConnection
+{
+    $log = Get-Item "C:\Windows\Logs\Scripts-DRF\Check-MeeteredConnection.log" -ErrorAction Ignore
+
+    if($log.Length -ge 100000000) { Rename-Item -Path "C:\Windows\Logs\Scripts-DRF\Check-MeeteredConnection.log" -NewName "Check-MeeteredConnection(old).log" -Force }
+    elseif($log.Length -ge 200000000) { Remove-Item "C:\Windows\Logs\Scripts-DRF\Check-MeeteredConnection(old).log" -Force }
+    else { Start-Transcript "C:\Windows\Logs\Scripts-DRF\Check-MeeteredConnection.log" -Append -Force }
+
+
+    $Startdate = Get-Date -Format 'dd/MM/yyyy HH:mm:ss' -ErrorAction Ignore
+    Write-Host "Startd at : $Startdate" -ErrorAction Ignore
+
+    $nicGuid = (Get-NetAdapter | Where { $_.InterfaceDescription -like "*Ethernet*" }).InterfaceGuid
+    $count = $nicGuid.Count
+    Write-Host "INFO : Il y a $count interfaces réseaux" -ForegroundColor Yellow -ErrorAction Ignore
+
+    foreach($interface in $nicGuid)
+    {
+        $regValue = (Get-ItemPropertyValue "HKLM:\SOFTWARE\Microsoft\DusmSvc\Profiles\$interface\*" -Name UserCost -ErrorAction Ignore)
+        if($regValue -eq 0)
+        {
+            Write-Warning "Une valeur $regValue a été trouvée pour les clées de registre de limitation de réseau..." -ErrorAction Ignore
+            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\DusmSvc\Profiles\$interface\*" -Name UserCost -Value 1 -Force
+            Restart-Service -Name DusmSvc -Force
+
+            $regValue = (Get-ItemPropertyValue "HKLM:\SOFTWARE\Microsoft\DusmSvc\Profiles\$interface\*" -Name UserCost -ErrorAction Ignore)
+            # Vérification
+            if($regValue -eq 1) 
+            { 
+                Write-Host "INFO : Tâche éffectuée avec succès ! " -ForegroundColor Green -ErrorAction Ignore 
+            }
+            elseif((Get-ItemPropertyValue "HKLM:\SOFTWARE\Microsoft\DusmSvc\Profiles\$interface\*" -Name UserCost -ErrorAction Ignore) -eq 0)
+            {
+                Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\DusmSvc\Profiles\$interface\*" -Name UserCost -Value 1 -Force
+                Restart-Service -Name DusmSvc -Force
+                $regValue = (Get-ItemPropertyValue "HKLM:\SOFTWARE\Microsoft\DusmSvc\Profiles\$interface\*" -Name UserCost -ErrorAction Ignore)
+                if($regValue -eq 0) 
+                { 
+                    Write-Host "ERROR : HKLM:\SOFTWARE\Microsoft\DusmSvc\Profiles\$interface\* --> UserCost n'est pas modifiée à 1 ! " -ForegroundColor Red -ErrorAction Ignore 
+                }
+                elseif((Get-ItemPropertyValue "HKLM:\SOFTWARE\Microsoft\DusmSvc\Profiles\$interface\*" -Name UserCost -ErrorAction Ignore) -eq 1)
+                {
+                    Write-Host "INFO : Tâche éffectuée avec succès ! (après avoir eu un éssaie loupé)" -ForegroundColor Green -ErrorAction Ignore 
+                }
+            }
+        }
+        else
+        {
+            Write-Host "INFO de la valeur des clées registre pour le réseau limité n'est pas définie pour HKLM:\SOFTWARE\Microsoft\DusmSvc\Profiles\$interface\* (valeur de la clé : $regValue) " -ErrorAction Ignore
+        } 
+    }
+
+    $dateEnd = Get-Date -Format 'dd/MM/yyyy HH:mm:ss' -ErrorAction Ignore
+    Write-Host "Ended at : $dateEnd" -ErrorAction Ignore
+
+    Stop-Transcript
+}
