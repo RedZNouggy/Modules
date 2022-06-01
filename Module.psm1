@@ -200,7 +200,7 @@ funtion Remove-LimitedConnection
     $log = Get-Item "$env:windir\Logs\Scripts-DRF\Check-MeeteredConnection.log" -ErrorAction Ignore
 
     if($log.Length -ge 100000000) { Rename-Item -Path "$env:windir\Logs\Scripts-DRF\Check-MeeteredConnection.log" -NewName "Check-MeeteredConnection(old).log" -Force }
-    elseif($log.Length -ge 200000000) { Remove-Item "$env:windir\Logs\Scripts-DRF\Check-MeeteredConnection(old).log" -Force }
+    elseif($log.Length -ge 200000000) { Remove-Item "$env:windir\Logs\Scripts-DRF\Check-MeeteredConnection(old).log" -Verbose -Force }
     else { Start-Transcript "$env:windir\Logs\Scripts-DRF\Check-MeeteredConnection.log" -Append -Force }
 
 
