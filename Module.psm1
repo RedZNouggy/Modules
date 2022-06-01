@@ -132,7 +132,7 @@ function Get-AllSize
 }
 
 # Version actuelle de windows
-function Get-WinVers()
+function Get-WinVers
 {
     $win_release = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").displayversion
     
