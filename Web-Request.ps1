@@ -96,12 +96,11 @@ function Download-Application
                 SplitLeft = "FileZilla_" 
                 SplitRight = "_win64-setup.exe"
                 ReferenceVersion = "3.60.0" 
-                MailRecever= "samuel.pages@cea.fr"
-               # MailRecever = "IRFU-AdminSysWindows@cea.fr" 
-                MailSender = "sccm-drf-e@cea.fr" 
-                MailCopy = "samuel.pages@cea.fr" 
+                MailRecever = "mail"
+                MailSender = "mail"
+                MailCopy = "mail"
                 MailEncoding = "UTF8" 
-                MailServer = "mx.extra.cea.fr" 
+                MailServer = "servermail" 
                 InvokeSpecialRequest = (((Invoke-WebRequest -Uri "https://download.filezilla-project.org/client/").Links  | Format-List href) | Out-String).Replace("href : ","").Replace(" ","").Replace("-","").Split("_")  -replace "\s", "" -notlike "#*" -notlike "* *" -notlike "" -notmatch "[a-z]" -notmatch "[A-Z]"
             }
 
