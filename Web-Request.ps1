@@ -91,7 +91,7 @@ function Download-Application
                 DownloadLink = "https://download.filezilla-project.org/client/FileZilla_[Version]_win64-setup.exe" 
                 AllVersionLink = "https://download.filezilla-project.org/client/" 
     
-                OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\FileZilla\LastVersion" 
+                OutFolder = "\\SERVER\produits\Instapc\Freeware\FileZilla\LastVersion" 
     
                 SplitLeft = "FileZilla_" 
                 SplitRight = "_win64-setup.exe"
@@ -241,7 +241,7 @@ $7Zip =
     DownloadLink = "https://sourceforge.net/projects/sevenzip/files/7-Zip/[Version7]/7z[Version]-x64.exe/download" 
     AllVersionLink = "https://sourceforge.net/projects/sevenzip/files/7-Zip/"
     
-    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\7-Zip\LastVersion" 
+    OutFolder = "\\SERVER\produits\Instapc\Freeware\7-Zip\LastVersion" 
     
     SplitLeft = "7z" 
     SplitRight = "-x64.exe"
@@ -261,7 +261,7 @@ $Notepad32 =
     DownloadLink = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v[Version]/npp.[Version].Installer.exe" 
     AllVersionLink = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases"
     
-    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\Notepad++\LastVersion" 
+    OutFolder = "\\SERVER\produits\Instapc\Freeware\Notepad++\LastVersion" 
     
     SplitLeft = "npp." 
     SplitRight = ".Installer.exe"
@@ -283,7 +283,7 @@ $Notepad64 =
     DownloadLink = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v[Version]/npp.[Version].Installer.exe" 
     AllVersionLink = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases"
     
-    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\Notepad++\LastVersion" 
+    OutFolder = "\\SERVER\produits\Instapc\Freeware\Notepad++\LastVersion" 
     
     SplitLeft = "npp." 
     SplitRight = ".Installer.x64.exe"
@@ -305,7 +305,7 @@ $KeePass =
     DownloadLink = "https://sourceforge.net/projects/keepass/files/KeePass%202.x/[Version]/KeePass-[Version]-Setup.exe/download"
     AllVersionLink = "https://sourceforge.net/projects/keepass/files/KeePass%202.x/" 
     
-    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\KeePass\LastVersion" 
+    OutFolder = "\\SERVER\produits\Instapc\Freeware\KeePass\LastVersion" 
     
     SplitLeft = "KeePass-" 
     SplitRight = "-Setup.exe"
@@ -325,7 +325,7 @@ $PuTTY =
     DownloadLink = "https://the.earth.li/~sgtatham/putty/[Version]/w64/putty-64bit-[Version]-installer.msi"
     AllVersionLink = "https://www.chiark.greenend.org.uk/~sgtatham/putty/changes.html" 
     
-    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\PuTTY\LastVersion" 
+    OutFolder = "\\SERVER\produits\Instapc\Freeware\PuTTY\LastVersion" 
     
     SplitLeft = "putty-64bit-" 
     SplitRight = "-installer.msi"
@@ -347,7 +347,7 @@ $FileZilla =
     DownloadLink = "https://download.filezilla-project.org/client/FileZilla_[Version]_win64-setup.exe"
     AllVersionLink = "https://download.filezilla-project.org/client/"
     
-    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\FileZilla\LastVersion" 
+    OutFolder = "\\SERVER\produits\Instapc\Freeware\FileZilla\LastVersion" 
     
     SplitLeft = "FileZilla_" 
     SplitRight = "_win64-setup.exe"
@@ -369,7 +369,7 @@ $WinSCP =
     DownloadLink = "https://sourceforge.net/projects/winscp/files/WinSCP/[Version]/WinSCP-[Version]-Setup.exe/download"
     AllVersionLink = "https://sourceforge.net/projects/winscp/files/WinSCP/"
     
-    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\Winscp\LastVersion" 
+    OutFolder = "\\SERVER\produits\Instapc\Freeware\Winscp\LastVersion" 
     
     SplitLeft = "WinSCP-" 
     SplitRight = "-Setup.exe"
