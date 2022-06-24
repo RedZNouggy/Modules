@@ -96,13 +96,13 @@ function Download-Application
                 SplitLeft = "FileZilla_" 
                 SplitRight = "_win64-setup.exe"
                 ReferenceVersion = "3.60.0" 
-                MailRecever= "mail@mail.com"
+                MailRecever= "samuel.pages@cea.fr"
                # MailRecever = "IRFU-AdminSysWindows@cea.fr" 
-                MailSender ="mail@mail.com"
-                MailCopy = "mail@mail.com"
+                MailSender = "sccm-drf-e@cea.fr" 
+                MailCopy = "samuel.pages@cea.fr" 
                 MailEncoding = "UTF8" 
-                MailServer = "ok.truc.machine.com"
-                InvokeSpecialRequest = (((Invoke-WebRequest -Uri "https://download.filezilla-project.org/client/").Links  | Format-List href) | Out-String).Replace("href : ","").Replace(" ","").Replace("-","").Split("_") -replace "\s", "" -notmatch "[a-z]" -notmatch "[A-Z]"
+                MailServer = "mx.extra.cea.fr" 
+                InvokeSpecialRequest = (((Invoke-WebRequest -Uri "https://download.filezilla-project.org/client/").Links  | Format-List href) | Out-String).Replace("href : ","").Replace(" ","").Replace("-","").Split("_")  -replace "\s", "" -notlike "#*" -notlike "* *" -notlike "" -notmatch "[a-z]" -notmatch "[A-Z]"
             }
 
 
@@ -123,7 +123,7 @@ function Download-Application
         }
         else
         {
-            $VersionsApp = (((Invoke-WebRequest -Uri $AllVersionLink).Links  | Format-List href) | Out-String).Replace('href : ','').Replace(' ','').Replace('..','').Split('/') -replace "\s", "" -notmatch '[a-z]' -notmatch '[A-Z]'
+            $VersionsApp = (((Invoke-WebRequest -Uri $AllVersionLink).Links  | Format-List href) | Out-String).Replace('href : ','').Replace(' ','').Replace('..','').Split('/') -replace "\s", "" -notlike "#*" -notlike "* *" -notlike "" -notmatch "[a-z]" -notmatch "[A-Z]"
         }
     }
 
@@ -136,8 +136,16 @@ function Download-Application
 
             if([System.Version]$v -gt [System.Version]$ReferenceVersion)
             {
-                Write-Warning "Correct application Version : $v" 
-                $nbV = $v 
+                if($v -eq $null)
+                {
+                    Write-Warning "Correct application Version : $v" 
+                    $nbV = $v 
+                }
+                elseif([System.Version]$v -gt [System.Version]$nbV)
+                {
+                    Write-Warning "Correct application Version : $v" 
+                    $nbV = $v
+                }
             }
         }
         $ErrorActionPreference = 'Continue'
@@ -151,6 +159,7 @@ function Download-Application
         else 
         { 
             $vers = ($nbV -replace "\s", "") 
+            $vers
         }
         
         
@@ -201,6 +210,7 @@ function Download-Application
     }
 }
 
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 
 
 # Execute Module :
 
@@ -211,17 +221,18 @@ $VLC =
     DownloadLink = "http://download.videolan.org/pub/videolan/vlc/[Version]/win64/vlc-[Version]-win64.msi" 
     AllVersionLink = "https://download.videolan.org/pub/videolan/vlc/"
     
-    OutFolder = "\\server\produits\Instapc\Freeware\VLC\LastVersion" 
+    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\VLC\LastVersion" 
     
     SplitLeft = "vlc-" 
     SplitRight = "-win64.msi"
     ReferenceVersion = "3.0.17.0"
    
-    MailRecever = "mail@mail.com"
-    MailSender = "mail@mail.com"
-    MailCopy = "mail@mail.com"
+    MailRecever = "IRFU-AdminSysWindows@cea.fr"
+    MailSender = "sccm-drf-e@cea.fr" 
+    MailCopy = "samuel.pages@cea.fr" 
     MailEncoding = "UTF8" 
-    MailServer = "ok.truc.chose.com"
+    MailServer = "mx.extra.cea.fr" 
+}
 
 $7Zip = 
 @{
@@ -230,17 +241,17 @@ $7Zip =
     DownloadLink = "https://sourceforge.net/projects/sevenzip/files/7-Zip/[Version7]/7z[Version]-x64.exe/download" 
     AllVersionLink = "https://sourceforge.net/projects/sevenzip/files/7-Zip/"
     
-    OutFolder = "\\server\produits\Instapc\Freeware\7-Zip\LastVersion" 
+    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\7-Zip\LastVersion" 
     
     SplitLeft = "7z" 
     SplitRight = "-x64.exe"
     ReferenceVersion = "21.06"
    
-    MailRecever = "mail@mail.com"
-    MailSender = "mail@mail.com"
-    MailCopy = "mail@mail.com"
+    MailRecever = "IRFU-AdminSysWindows@cea.fr"
+    MailSender = "sccm-drf-e@cea.fr" 
+    MailCopy = "samuel.pages@cea.fr" 
     MailEncoding = "UTF8" 
-    MailServer = "ok.truc.chose.com"
+    MailServer = "mx.extra.cea.fr" 
 }
 
 $Notepad32 = 
@@ -250,17 +261,17 @@ $Notepad32 =
     DownloadLink = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v[Version]/npp.[Version].Installer.exe" 
     AllVersionLink = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases"
     
-    OutFolder = "\\server\produits\Instapc\Freeware\Notepad++\LastVersion" 
+    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\Notepad++\LastVersion" 
     
     SplitLeft = "npp." 
     SplitRight = ".Installer.exe"
     ReferenceVersion = "8.4.1"
    
-    MailRecever = "mail@mail.com"
-    MailSender = "mail@mail.com"
-    MailCopy = "mail@mail.com"
+    MailRecever = "IRFU-AdminSysWindows@cea.fr" 
+    MailSender = "sccm-drf-e@cea.fr" 
+    MailCopy = "samuel.pages@cea.fr" 
     MailEncoding = "UTF8" 
-    MailServer = "ok.truc.chose.com"
+    MailServer = "mx.extra.cea.fr" 
 
     InvokeSpecialRequest = (((((Invoke-WebRequest -Uri "https://github.com/notepad-plus-plus/notepad-plus-plus/releases").Links  | Format-List href) | Out-String).Replace('href : ','').Replace(' ','').Replace('..','').replace('v','').Split('/') -replace "\s", "" -ne ' ' -match "\d+" -like "*x64*" -notlike "*.sig" -notlike "*.7z" -notlike "*.zip").Replace('npp.','').Replace('.Installer.x64.exe','')) -replace "\s", "" -notmatch '[a-z]' -notmatch '[A-Z]'
 }
@@ -272,17 +283,17 @@ $Notepad64 =
     DownloadLink = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v[Version]/npp.[Version].Installer.exe" 
     AllVersionLink = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases"
     
-    OutFolder = "\\server\produits\Instapc\Freeware\Notepad++\LastVersion" 
+    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\Notepad++\LastVersion" 
     
     SplitLeft = "npp." 
     SplitRight = ".Installer.x64.exe"
     ReferenceVersion = "8.4.1"
    
-    MailRecever = "mail@mail.com"
-    MailSender = "mail@mail.com"
-    MailCopy = "mail@mail.com"
+    MailRecever = "IRFU-AdminSysWindows@cea.fr"
+    MailSender = "sccm-drf-e@cea.fr" 
+    MailCopy = "samuel.pages@cea.fr" 
     MailEncoding = "UTF8" 
-    MailServer = "ok.truc.chose.com"
+    MailServer = "mx.extra.cea.fr" 
 
     InvokeSpecialRequest = (((((Invoke-WebRequest -Uri "https://github.com/notepad-plus-plus/notepad-plus-plus/releases").Links  | Format-List href) | Out-String).Replace('href : ','').Replace(' ','').Replace('..','').replace('v','').Split('/') -replace "\s", "" -ne ' ' -match "\d+" -like "*x64*" -notlike "*.sig" -notlike "*.7z" -notlike "*.zip").Replace('npp.','').Replace('.Installer.x64.exe','')) -replace "\s", "" -notmatch '[a-z]' -notmatch '[A-Z]'
 }
@@ -294,17 +305,17 @@ $KeePass =
     DownloadLink = "https://sourceforge.net/projects/keepass/files/KeePass%202.x/[Version]/KeePass-[Version]-Setup.exe/download"
     AllVersionLink = "https://sourceforge.net/projects/keepass/files/KeePass%202.x/" 
     
-    OutFolder = "\\server\produits\Instapc\Freeware\KeePass\LastVersion" 
+    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\KeePass\LastVersion" 
     
     SplitLeft = "KeePass-" 
     SplitRight = "-Setup.exe"
     ReferenceVersion = "2.50.1"
    
-    MailRecever = "mail@mail.com"
-    MailSender = "mail@mail.com"
-    MailCopy = "mail@mail.com"
+    MailRecever =  "samuel.pages@cea.fr"
+    MailSender = "sccm-drf-e@cea.fr" 
+    MailCopy = "samuel.pages@cea.fr" 
     MailEncoding = "UTF8" 
-    MailServer = "ok.truc.chose.com"
+    MailServer = "mx.extra.cea.fr" 
 }
 
 $PuTTY = 
@@ -314,19 +325,19 @@ $PuTTY =
     DownloadLink = "https://the.earth.li/~sgtatham/putty/[Version]/w64/putty-64bit-[Version]-installer.msi"
     AllVersionLink = "https://www.chiark.greenend.org.uk/~sgtatham/putty/changes.html" 
     
-    OutFolder = "\\server\produits\Instapc\Freeware\PuTTY\LastVersion" 
+    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\PuTTY\LastVersion" 
     
     SplitLeft = "putty-64bit-" 
     SplitRight = "-installer.msi"
-    ReferenceVersion = "0.77"
+    ReferenceVersion = "0.76"
    
-    MailRecever = "mail@mail.com"
-    MailSender = "mail@mail.com"
-    MailCopy = "mail@mail.com"
+    MailRecever = "IRFU-AdminSysWindows@cea.fr"
+    MailSender = "sccm-drf-e@cea.fr" 
+    MailCopy = "samuel.pages@cea.fr" 
     MailEncoding = "UTF8" 
-    MailServer = "ok.truc.chose.com"
+    MailServer = "mx.extra.cea.fr" 
 
-    InvokeSpecialRequest = ((((Invoke-WebRequest -Uri "https://www.chiark.greenend.org.uk/~sgtatham/putty/changes.html").Links  | Format-List href) | Out-String).Replace('href : ','').Replace('releases/','').Replace('.html','').Replace(' ','').Replace('..','').Split('') -replace "\s", "" -notmatch '[a-z]' -notmatch '[A-Z]')
+    InvokeSpecialRequest = (((Invoke-WebRequest -Uri "https://www.chiark.greenend.org.uk/~sgtatham/putty/changes.html").Links  | Format-List outerText) | Out-String).Replace('outerText : ','').Split('')  -replace "\s", "" -notlike "#*" -notlike "* *" -notlike "" -notmatch "[a-z]" -notmatch "[A-Z]"
 }
 
 $FileZilla = 
@@ -336,19 +347,19 @@ $FileZilla =
     DownloadLink = "https://download.filezilla-project.org/client/FileZilla_[Version]_win64-setup.exe"
     AllVersionLink = "https://download.filezilla-project.org/client/"
     
-    OutFolder = "\\server\produits\Instapc\Freeware\FileZilla\LastVersion" 
+    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\FileZilla\LastVersion" 
     
     SplitLeft = "FileZilla_" 
     SplitRight = "_win64-setup.exe"
     ReferenceVersion = "3.60.0"
    
-    MailRecever = "mail@mail.com"
-    MailSender = "mail@mail.com"
-    MailCopy = "mail@mail.com"
+    MailRecever = "IRFU-AdminSysWindows@cea.fr" 
+    MailSender = "sccm-drf-e@cea.fr" 
+    MailCopy = "samuel.pages@cea.fr" 
     MailEncoding = "UTF8" 
-    MailServer = "ok.truc.chose.com"
+    MailServer = "mx.extra.cea.fr" 
 
-    InvokeSpecialRequest = (((Invoke-WebRequest -Uri "https://download.filezilla-project.org/client/").Links  | Format-List href) | Out-String).Replace("href : ","").Replace(" ","").Replace("-","").Split("_") -replace "\s", "" -notmatch "[a-z]" -notmatch "[A-Z]"
+    InvokeSpecialRequest = (((Invoke-WebRequest -Uri "https://download.filezilla-project.org/client/").Links  | Format-List href) | Out-String).Replace("href : ","").Replace(" ","").Replace("-","").Split("_") -replace "\s", "" -notlike "" -notmatch "[a-z]" -notmatch "[A-Z]"
 }
 
 $WinSCP = 
@@ -358,17 +369,17 @@ $WinSCP =
     DownloadLink = "https://sourceforge.net/projects/winscp/files/WinSCP/[Version]/WinSCP-[Version]-Setup.exe/download"
     AllVersionLink = "https://sourceforge.net/projects/winscp/files/WinSCP/"
     
-    OutFolder = "\\server\produits\Instapc\Freeware\Winscp\LastVersion" 
+    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\Winscp\LastVersion" 
     
     SplitLeft = "WinSCP-" 
     SplitRight = "-Setup.exe"
     ReferenceVersion = "5.20.0"
    
-    MailRecever = "mail@mail.com"
-    MailSender = "mail@mail.com"
-    MailCopy = "mail@mail.com"
+    MailRecever = "IRFU-AdminSysWindows@cea.fr"
+    MailSender = "sccm-drf-e@cea.fr" 
+    MailCopy = "samuel.pages@cea.fr" 
     MailEncoding = "UTF8" 
-    MailServer = "ok.truc.chose.com"
+    MailServer = "mx.extra.cea.fr" 
 }
 
 
