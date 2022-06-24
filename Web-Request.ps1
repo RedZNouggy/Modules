@@ -221,17 +221,17 @@ $VLC =
     DownloadLink = "http://download.videolan.org/pub/videolan/vlc/[Version]/win64/vlc-[Version]-win64.msi" 
     AllVersionLink = "https://download.videolan.org/pub/videolan/vlc/"
     
-    OutFolder = "\\dsmecommuns\produits\Instapc\Freeware\VLC\LastVersion" 
+    OutFolder = "\\SERVER\produits\Instapc\Freeware\VLC\LastVersion" 
     
     SplitLeft = "vlc-" 
     SplitRight = "-win64.msi"
     ReferenceVersion = "3.0.17.0"
    
-    MailRecever = "IRFU-AdminSysWindows@cea.fr"
-    MailSender = "sccm-drf-e@cea.fr" 
-    MailCopy = "samuel.pages@cea.fr" 
+    MailRecever = "mail"
+    MailSender = "mail"
+    MailCopy = "mail"
     MailEncoding = "UTF8" 
-    MailServer = "mx.extra.cea.fr" 
+    MailServer = "servermail"
 }
 
 $7Zip = 
@@ -247,11 +247,11 @@ $7Zip =
     SplitRight = "-x64.exe"
     ReferenceVersion = "21.06"
    
-    MailRecever = "IRFU-AdminSysWindows@cea.fr"
-    MailSender = "sccm-drf-e@cea.fr" 
-    MailCopy = "samuel.pages@cea.fr" 
+    MailRecever = "mail"
+    MailSender = "mail"
+    MailCopy = "mail"
     MailEncoding = "UTF8" 
-    MailServer = "mx.extra.cea.fr" 
+    MailServer = "servermail" 
 }
 
 $Notepad32 = 
@@ -267,11 +267,11 @@ $Notepad32 =
     SplitRight = ".Installer.exe"
     ReferenceVersion = "8.4.1"
    
-    MailRecever = "IRFU-AdminSysWindows@cea.fr" 
-    MailSender = "sccm-drf-e@cea.fr" 
-    MailCopy = "samuel.pages@cea.fr" 
+    MailRecever = "mail"
+    MailSender = "mail"
+    MailCopy = "mail"
     MailEncoding = "UTF8" 
-    MailServer = "mx.extra.cea.fr" 
+    MailServer = "servermail"
 
     InvokeSpecialRequest = (((((Invoke-WebRequest -Uri "https://github.com/notepad-plus-plus/notepad-plus-plus/releases").Links  | Format-List href) | Out-String).Replace('href : ','').Replace(' ','').Replace('..','').replace('v','').Split('/') -replace "\s", "" -ne ' ' -match "\d+" -like "*x64*" -notlike "*.sig" -notlike "*.7z" -notlike "*.zip").Replace('npp.','').Replace('.Installer.x64.exe','')) -replace "\s", "" -notmatch '[a-z]' -notmatch '[A-Z]'
 }
@@ -289,11 +289,11 @@ $Notepad64 =
     SplitRight = ".Installer.x64.exe"
     ReferenceVersion = "8.4.1"
    
-    MailRecever = "IRFU-AdminSysWindows@cea.fr"
-    MailSender = "sccm-drf-e@cea.fr" 
-    MailCopy = "samuel.pages@cea.fr" 
+    MailRecever = "mail"
+    MailSender = "mail"
+    MailCopy = "mail"
     MailEncoding = "UTF8" 
-    MailServer = "mx.extra.cea.fr" 
+    MailServer = "servermail" 
 
     InvokeSpecialRequest = (((((Invoke-WebRequest -Uri "https://github.com/notepad-plus-plus/notepad-plus-plus/releases").Links  | Format-List href) | Out-String).Replace('href : ','').Replace(' ','').Replace('..','').replace('v','').Split('/') -replace "\s", "" -ne ' ' -match "\d+" -like "*x64*" -notlike "*.sig" -notlike "*.7z" -notlike "*.zip").Replace('npp.','').Replace('.Installer.x64.exe','')) -replace "\s", "" -notmatch '[a-z]' -notmatch '[A-Z]'
 }
@@ -311,11 +311,11 @@ $KeePass =
     SplitRight = "-Setup.exe"
     ReferenceVersion = "2.50.1"
    
-    MailRecever =  "samuel.pages@cea.fr"
-    MailSender = "sccm-drf-e@cea.fr" 
-    MailCopy = "samuel.pages@cea.fr" 
+    MailRecever = "mail"
+    MailSender = "mail"
+    MailCopy = "mail"
     MailEncoding = "UTF8" 
-    MailServer = "mx.extra.cea.fr" 
+    MailServer = "servermail"
 }
 
 $PuTTY = 
@@ -331,11 +331,11 @@ $PuTTY =
     SplitRight = "-installer.msi"
     ReferenceVersion = "0.76"
    
-    MailRecever = "IRFU-AdminSysWindows@cea.fr"
-    MailSender = "sccm-drf-e@cea.fr" 
-    MailCopy = "samuel.pages@cea.fr" 
+    MailRecever = "mail"
+    MailSender = "mail"
+    MailCopy = "mail"
     MailEncoding = "UTF8" 
-    MailServer = "mx.extra.cea.fr" 
+    MailServer = "servermail"
 
     InvokeSpecialRequest = (((Invoke-WebRequest -Uri "https://www.chiark.greenend.org.uk/~sgtatham/putty/changes.html").Links  | Format-List outerText) | Out-String).Replace('outerText : ','').Split('')  -replace "\s", "" -notlike "#*" -notlike "* *" -notlike "" -notmatch "[a-z]" -notmatch "[A-Z]"
 }
@@ -353,12 +353,12 @@ $FileZilla =
     SplitRight = "_win64-setup.exe"
     ReferenceVersion = "3.60.0"
    
-    MailRecever = "IRFU-AdminSysWindows@cea.fr" 
-    MailSender = "sccm-drf-e@cea.fr" 
-    MailCopy = "samuel.pages@cea.fr" 
+    MailRecever = "mail"
+    MailSender = "mail"
+    MailCopy = "mail" 
     MailEncoding = "UTF8" 
-    MailServer = "mx.extra.cea.fr" 
-
+    MailServer = "servermail"
+    
     InvokeSpecialRequest = (((Invoke-WebRequest -Uri "https://download.filezilla-project.org/client/").Links  | Format-List href) | Out-String).Replace("href : ","").Replace(" ","").Replace("-","").Split("_") -replace "\s", "" -notlike "" -notmatch "[a-z]" -notmatch "[A-Z]"
 }
 
@@ -375,11 +375,11 @@ $WinSCP =
     SplitRight = "-Setup.exe"
     ReferenceVersion = "5.20.0"
    
-    MailRecever = "IRFU-AdminSysWindows@cea.fr"
-    MailSender = "sccm-drf-e@cea.fr" 
-    MailCopy = "samuel.pages@cea.fr" 
+    MailRecever = "mail"
+    MailSender = "mail"
+    MailCopy = "mail"
     MailEncoding = "UTF8" 
-    MailServer = "mx.extra.cea.fr" 
+    MailServer = "servermail"
 }
 
 
