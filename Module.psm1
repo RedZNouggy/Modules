@@ -9,7 +9,7 @@ function Check-Network
     param
     (
         [Parameter(Mandatory=$false, Position=0)]
-        [Switch]$TestCeaExtra,
+        [Switch]$TestExtranet,
 
         [ValidateNotNullOrEmpty()]
         [Parameter(Mandatory=$false, Position=1)]
@@ -23,10 +23,10 @@ function Check-Network
         [ValidatePattern('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')]
         [String]$Ip2
     )
-    if($TestCeaExtra)
+    if($TestExtranet)
     {
         $extra = $false
-        Get-NetConnectionProfile | ForEach-Object -process { if ($_.Name -like "extra.cea.fr*") { $extra = $true } }
+        Get-NetConnectionProfile | ForEach-Object -process { if ($_.Name -like "extra.fr*") { $extra = $true } }
         if($extra -eq $true)
         {
             return $true;
