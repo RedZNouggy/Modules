@@ -5,223 +5,8 @@
     Le Parametre -help dans "Download-Application -Help" permet d'avoir un petit exemple de comment fonctionne la fonction Download-Application
 #>
 
+Import-Module "C:\Tache_Auto\Download-Application.psm1" -Function Download-Application -Force -DisableNameChecking -Verbose
 
-
-function Download-Application
-{
-    [CmdletBinding()]
-    param
-    (
-        [Parameter(Mandatory=$false, Position=0)]
-        [switch]$Help,
-
-        [Parameter(Mandatory=$true, Position=1)]
-        [ValidateNotNullorEmpty()]
-        [string]$ApplicationName,
-
-        [Parameter(Mandatory=$true, Position=2)]
-        [ValidateNotNullorEmpty()]
-        [ValidateScript({
-            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-            if(-not(Invoke-WebRequest -Uri $_)) 
-            {
-                throw "The link '$_' is not reachable"
-            }    
-            return $true
-        })]
-        [string]$AllVersionLink,
-
-        [Parameter(Mandatory=$true, Position=3)]
-        [ValidateNotNullorEmpty()]
-        [string]$DownloadLink,
-
-        [Parameter(Mandatory=$true, Position=4)]
-        [ValidateNotNullorEmpty()]
-        [ValidateScript({ 
-            if(-not($_ | Test-Path))
-            {
-                throw "The folder '$_' does not exist"
-            }
-            return $true
-        })]
-        [System.IO.FileInfo]$OutFolder,
-
-        [Parameter(Mandatory=$true, Position=5)]
-        [ValidateNotNullorEmpty()]
-        [string]$SplitLeft,
-
-        [Parameter(Mandatory=$true, Position=6)]
-        [ValidateNotNullorEmpty()]
-        [string]$SplitRight,
-
-        [Parameter(Mandatory=$true, Position=7)]
-        [ValidateNotNullorEmpty()]
-        [System.Version]$ReferenceVersion,
-
-        [Parameter(Mandatory=$true, Position=8)]
-        [ValidateNotNullorEmpty()]
-        [mailaddress]$MailRecever,
-
-        [Parameter(Mandatory=$true, Position=9)]
-        [ValidateNotNullorEmpty()]
-        [mailaddress]$MailSender,
-
-        [Parameter(Mandatory=$false, Position=10)]
-        [mailaddress]$MailCopy,
-
-        [Parameter(Mandatory=$true, Position=11)]
-        [ValidateNotNullorEmpty()]
-        [string]$MailEncoding,
-
-        [Parameter(Mandatory=$true, Position=12)]
-        [ValidateNotNullorEmpty()]
-        [string]$MailServer,
-
-        [Parameter(Mandatory=$false, Position=13)]
-        [ValidateNotNullorEmpty()]
-        $InvokeSpecialRequest
-    )
-
-
-    begin 
-    {
-        if($Help)
-        {
-            return '
-            
-            Exemple : 
-
-
-            $DefaultParameters = 
-            @{
-                ApplicationName = "FileZilla"
-    
-                DownloadLink = "https://download.filezilla-project.org/client/FileZilla_[Version]_win64-setup.exe" 
-                AllVersionLink = "https://download.filezilla-project.org/client/" 
-    
-                OutFolder = "\\...\produits\Instapc\Freeware\FileZilla\LastVersion" 
-    
-                SplitLeft = "FileZilla_" 
-                SplitRight = "_win64-setup.exe"
-                ReferenceVersion = "3.60.0" 
-                MailRecever = "" 
-                MailSender = "" 
-                MailCopy = "" 
-                MailEncoding = "UTF8" 
-                MailServer = "" 
-                InvokeSpecialRequest = (((Invoke-WebRequest -Uri "https://download.filezilla-project.org/client/").Links  | Format-List href) | Out-String).Replace("href : ","").Replace(" ","").Replace("-","").Split("_")  -replace "\s", "" -notlike "#*" -notlike "* *" -notlike "" -notmatch "[a-z]" -notmatch "[A-Z]"
-            }
-
-
-            The command : Download-Application @DefaultParameters
-
-            If there is any version on your link : replace it :"https://sourceforge.net/projects/sevenzip/files/7-Zip/2107/7z2107-x64.exe/download" in "https://sourceforge.net/projects/sevenzip/files/7-Zip/[Version]/7z[Version]-x64.exe/download"
-            and for 7-Zip :  "https://sourceforge.net/projects/sevenzip/files/7-Zip/[Version7]/7z[Version]-x64.exe/download" 
-            Try : (((Invoke-WebRequest -Uri [YOUR_LINK]).Links  | Format-List href) | Out-String).Replace("href : ","").Replace(" ",'').Replace("-","").Split("_") -replace "\s", "" -notmatch "[a-z]" -notmatch "[A-Z]"
-            And try to understand what filter you have to add on the Request to filter only versions  without any string or spaces
-            '
-        }
-        
-        else
-        {
-            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12  # --> Sans cette ligne, certains téléchargements peuvent ne pas fonctionner
-
-            if($InvokeSpecialRequest)
-            {
-                $VersionsApp = $InvokeSpecialRequest
-            }
-            else
-            {
-                $VersionsApp = (((Invoke-WebRequest -Uri $AllVersionLink).Links  | Format-List href) | Out-String).Replace('href : ','').Replace(' ','').Replace('..','').Split('/') -replace "\s", "" -notlike "#*" -notlike "* *" -notlike "" -notmatch "[a-z]" -notmatch "[A-Z]"
-            }
-        }
-    }
-
-    process
-    {
-        if(-not $Help)
-        {
-             # boucle foreach
-            foreach($v in $VersionsApp) 
-            { 
-                $ErrorActionPreference = 0
-
-                if([System.Version]$v -gt [System.Version]$ReferenceVersion)
-                {
-                    if($v -eq $null)
-                    {
-                        Write-Warning "Correct application Version : $v" 
-                        $nbV = $v 
-                    }
-                    elseif([System.Version]$v -gt [System.Version]$nbV)
-                    {
-                        Write-Warning "Correct application Version : $v" 
-                        $nbV = $v
-                    }
-                }
-            }
-            $ErrorActionPreference = 'Continue'
-
-            # 7-zip est un cas particulier
-            if($ApplicationName -like '*7*Zip*') 
-            { 
-                $vers = ($nbV -replace "\s", "").Replace('.','') 
-                $nbV = ($nbV -replace "\s", "") 
-            }
-            else 
-            { 
-                $vers = ($nbV -replace "\s", "") 
-                $vers
-            }
-        }
-    }
-    end
-    {
-        if(-not $Help)
-        {
-            $Body = ""
-
-            if($vers -ne $null)
-            {
-                $DownloadLink = $DownloadLink.Replace("[Version]","$vers").Replace("[Version7]","$nbV")
-
-                if(!(Test-Path "$OutFolder\${SplitLeft}${vers}${SplitRight}"))
-                {
-
-                    $Subject = "New Applications Versions $OutFolder"
-                    $Body = "`n $ApplicationName : $OutFolder\${SplitLeft}${vers}${SplitRight}"
-                
-                    try { Invoke-WebRequest -Uri "$DownloadLink" -OutFile "$OutFolder\${SplitLeft}${vers}${SplitRight}" -UserAgent "Wget" -Verbose }
-                    catch { Invoke-WebRequest -Uri "$DownloadLink" -OutFile "$OutFolder\${SplitLeft}${vers}${SplitRight}" -Verbose }
-
-                }
-                else
-                {
-                    Write-Warning "La derniere Version de $ApplicationName est déjà présente sur $OutFolder\${SplitLeft}${vers}${SplitRight}"
-                }
-    
-            }
-        
-            if($Body -ne "")
-            {
-                $BodyText = "<!DOCTYPE HTML>"
-                $BodyText += "<HTML><HEAD><META http-equiv=Content-Type content='text/html; charset=iso-8859-1'>"
-                $BodyText += "</HEAD><BODY><DIV style='font-size:14.5px; font-family:Calibri;'>"
-                $BodyText += $Body
-                $BodyText += "</DIV></BODY></HTML>";
-
-                if($MailCopy)
-                {
-                    Send-MailMessage -from $MailSender -To $MailRecever -Subject $Subject -Body $BodyText -BodyAsHtml -Cc $MailCopy -Encoding $MailEncoding -SmtpServer $MailServer -Verbose
-                }
-                else
-                {
-                    Send-MailMessage -from $MailSender -To $MailRecever -Subject $Subject -Body $BodyText -BodyAsHtml -Encoding $MailEncoding -SmtpServer $MailServer -Verbose
-                }
-            }
-        }
-    }
-}
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 
 
@@ -242,7 +27,6 @@ $VLC =
    
     MailRecever = ""
     MailSender = "" 
-    #MailCopy = "" 
     MailEncoding = "UTF8" 
     MailServer = "" 
 }
@@ -262,7 +46,6 @@ $7Zip =
    
     MailRecever = ""
     MailSender = "" 
-    #MailCopy = "" 
     MailEncoding = "UTF8" 
     MailServer = "" 
 }
@@ -282,7 +65,6 @@ $Notepad32 =
    
     MailRecever = ""
     MailSender = "" 
-    #MailCopy = "" 
     MailEncoding = "UTF8" 
     MailServer = "" 
 
@@ -304,7 +86,6 @@ $Notepad64 =
    
     MailRecever = ""
     MailSender = "" 
-    #MailCopy = "" 
     MailEncoding = "UTF8" 
     MailServer = "" 
 
@@ -326,7 +107,6 @@ $KeePass =
    
     MailRecever = ""
     MailSender = "" 
-    #MailCopy = "" 
     MailEncoding = "UTF8" 
     MailServer = "" 
 }
@@ -346,7 +126,6 @@ $PuTTY =
    
     MailRecever = ""
     MailSender = "" 
-    #MailCopy = "" 
     MailEncoding = "UTF8" 
     MailServer = "" 
 
@@ -368,7 +147,6 @@ $FileZilla =
    
     MailRecever = ""
     MailSender = "" 
-    #MailCopy = "" 
     MailEncoding = "UTF8" 
     MailServer = "" 
 
@@ -390,9 +168,53 @@ $WinSCP =
    
     MailRecever = ""
     MailSender = "" 
-    #MailCopy = "" 
     MailEncoding = "UTF8" 
     MailServer = "" 
+}
+
+
+$PaintDotNet = 
+@{
+    ApplicationName = 'Paint.NET'
+    
+    DownloadLink = "https://github.com/paintdotnet/release/releases/download/v[Version]/paint.net.[Version].winmsi.x64.zip"
+    AllVersionLink = "https://github.com/paintdotnet/release/releases"
+    
+    OutFolder = "\\...\produits\Instapc\Freeware\Paint.NET\LastVersion" 
+    
+    SplitLeft = "paint.net." 
+    SplitRight = ".winmsi.x64.zip"
+    ReferenceVersion = "4.3.10"
+   
+    MailRecever = ""
+    MailSender = "" 
+    MailEncoding = "UTF8" 
+    MailServer = "" 
+
+    InvokeSpecialRequest = (((Invoke-WebRequest -Uri "https://github.com/paintdotnet/release/releases").Links  | Format-List href) | Out-String).Replace('href : ','').Replace(' ','').Replace('..','').Replace('v','').Split('/')  -replace "\s", "" -notlike "" -notmatch "[a-z]" -notmatch "[A-Z]"
+    
+    Extract = $true
+}
+
+$PDFSam = 
+@{
+    ApplicationName = 'PDFSam'
+    
+    DownloadLink = "https://sourceforge.net/projects/pdfsam/files/v[Version]/pdfsam-[Version].msi/download"
+    AllVersionLink = "https://sourceforge.net/projects/pdfsam/files/"
+    
+    OutFolder = "\\...\produits\Instapc\Freeware\pdfsam\LastVersion" 
+    
+    SplitLeft = "pdfsam-" 
+    SplitRight = ".msi"
+    ReferenceVersion = "4.3.1"
+   
+    MailRecever = ""
+    MailSender = "" 
+    MailEncoding = "UTF8" 
+    MailServer = "" 
+
+    InvokeSpecialRequest = (((Invoke-WebRequest -Uri "https://sourceforge.net/projects/pdfsam/files/").Links | Format-List href) | Out-String).Replace('href : ','').Replace(' ','').Replace('..','').Replace('v','').Split('/')  -replace "\s", "" -notlike "" -notmatch "[a-z]" -notmatch "[A-Z]"
 }
 
 <#$AutreApplication = 
@@ -402,17 +224,17 @@ $WinSCP =
     DownloadLink = ""
     AllVersionLink = ""
     
-    OutFolder = "\\...\produits\Instapc\Freeware\" 
+    OutFolder = "" 
     
     SplitLeft = "" 
     SplitRight = ""
     ReferenceVersion = ""
    
-    MailRecever = ""
-    MailSender = "" 
+    MailRecever = "IRFU-AdminSysWindows@cea.fr"
+    MailSender = "sccm-drf-e@cea.fr" 
     #MailCopy = "" 
     MailEncoding = "UTF8" 
-    MailServer = "" 
+    MailServer = "mx.extra.cea.fr" 
 }
 #>
 
@@ -436,6 +258,10 @@ Download-Application @KeePass
 Download-Application @PuTTY 
 Download-Application @FileZilla 
 Download-Application @WinSCP
+Download-Application @PaintDotNet
+Download-Application @PDFSam
 #Download-Application @AutreApplication
 
 Stop-Transcript 
+
+            
