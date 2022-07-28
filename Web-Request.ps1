@@ -1,7 +1,7 @@
 <#
     Finit le 28/06/2022 par Samuel PAGES 
-    Le script permet : https://esrefirfu.extra.cea.fr/seedocument.php?id=75
-    d'aller chercher les sources des applications et les deplacer dans dsmecommuns 
+    Le script permet : ...
+    d'aller chercher les sources des applications et les deplacer dans ... 
     Le Parametre -help dans "Download-Application -Help" permet d'avoir un petit exemple de comment fonctionne la fonction Download-Application
 #>
 
