@@ -12,7 +12,7 @@ begin # --> création des variables "statiques"
 
 process # --> vérification et suppression des sources + création des logs
 {
-    ############## Logs ##############
+    ############## Logs ###############
     if(((Get-ItemProperty "C:\Tache_Auto\Applications-Available.log" -ErrorAction Ignore).Length) -gt 250000000 )
     {
         Remove-Item "C:\Tache_Auto\Applications-Available.log" -Force -Verbose -Confirm:$false -ErrorAction Continue
