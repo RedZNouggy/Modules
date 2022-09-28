@@ -1,0 +1,4 @@
+[autorun]
+;Open=create-env.ps1
+shellexecute=create-env.ps1
+UseAutoPlay=1
