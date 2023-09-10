@@ -101,7 +101,7 @@ $datejeudiAM = $date.AddDays(2).ToString("yyyy/MM/dd") + " 11:00AM"
 $datejeudiPM = $date.AddDays(2).ToString("yyyy/MM/dd") + " 01:00PM"
 $datelundiAM = $date.AddDays(6).ToString("yyyy/MM/dd") + " 10:00AM"
 $datelundiPM = $date.AddDays(6).ToString("yyyy/MM/dd") + " 07:00PM"
-$dateMercredi = $date.AddDays(8).ToString("yyyy/MM/dd")+ " 12:01PM"
+$dateMercredi = $date.AddDays(8).ToString("yyyy/MM/dd") + " 12:01PM"
 $datelundi2031 = "2031/07/12 10:00AM"
 
 $nomPremierPatch = "Security Update for Microsoft Visio Viewer 2010 (KB2999465) 32-Bit Edition"
